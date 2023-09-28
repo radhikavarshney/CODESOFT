@@ -48,52 +48,62 @@ bool checkDraw(const std::vector<std::vector<char>> &board)
     return true;
 }
 
+bool playAgain()
+{
+    char choice;
+    std::cout << "Do you want to play again? (y/n): ";
+    std::cin >> choice;
+    return (choice == 'y' || choice == 'Y');
+}
+
 int main()
 {
-    std::vector<std::vector<char>> board(BOARD_SIZE, std::vector<char>(BOARD_SIZE, EMPTY_CELL));
-    char currentPlayer = PLAYER_X;
-
     std::cout << "Welcome to Tic-Tac-Toe!\n";
 
     while (true)
     {
-        std::cout << "Current board:\n";
-        displayBoard(board);
+        std::vector<std::vector<char>> board(BOARD_SIZE, std::vector<char>(BOARD_SIZE, EMPTY_CELL));
+        char currentPlayer = PLAYER_X;
 
-        int row, col;
-        std::cout << "Player " << currentPlayer << ", enter your move (row [0-2] and column [0-2]): ";
-        std::cin >> row >> col;
-
-        if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE || board[row][col] != EMPTY_CELL)
+        while (true)
         {
-            std::cout << "Invalid move. Try again.\n";
-            continue;
-        }
-
-        board[row][col] = currentPlayer;
-
-        if (checkWin(board, currentPlayer))
-        {
-            std::cout << "\n-------------------------------------------\n";
-            std::cout << "Player " << currentPlayer << " wins!\n";
-            std::cout << "\n-------------------------------------------\n";
+            std::cout << "Current board:\n";
             displayBoard(board);
-            break;
+
+            int row, col;
+            std::cout << "Player " << currentPlayer << ", enter your move (row [0-2] and column [0-2]): ";
+            std::cin >> row >> col;
+
+            if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE || board[row][col] != EMPTY_CELL)
+            {
+                std::cout << "Invalid move. Try again.\n";
+                continue;
+            }
+
+            board[row][col] = currentPlayer;
+
+            if (checkWin(board, currentPlayer))
+            {
+                std::cout << "Player " << currentPlayer << " wins!\n";
+                displayBoard(board);
+                break;
+            }
+
+            if (checkDraw(board))
+            {
+                std::cout << "It's a draw!\n";
+                displayBoard(board);
+                break;
+            }
+
+            currentPlayer = (currentPlayer == PLAYER_X) ? PLAYER_O : PLAYER_X;
         }
 
-        if (checkDraw(board))
-        {
-            std::cout << "\n-------------------------------------------\n";
-            std::cout << "It's a draw!\n";
-            std::cout << "\n-------------------------------------------\n";
-            displayBoard(board);
+        if (!playAgain())
             break;
-        }
-
-        currentPlayer = (currentPlayer == PLAYER_X) ? PLAYER_O : PLAYER_X;
     }
 
-    std::cout << "\nThanks for playing!\n";
+    std::cout << "Thanks for playing!\n";
 
     return 0;
 }
